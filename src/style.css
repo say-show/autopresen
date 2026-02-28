@@ -1,0 +1,427 @@
+/* =============================================
+   style.css - iPhone Safari / PWA 対応スタイル
+   ============================================= */
+
+/* --- リセット & ベース --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-bg: #1a1a2e;
+  --color-surface: #16213e;
+  --color-primary: #0f3460;
+  --color-accent: #e94560;
+  --color-text: #f0f0f0;
+  --color-text-muted: #a0a0b0;
+  --color-border: #2a2a4a;
+  --color-progress: #e94560;
+
+  /* safe-area-inset フォールバック */
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+}
+
+html,
+body {
+  width: 100%;
+  height: 100dvh; /* iPhone アドレスバー込みの高さ */
+  overflow: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  -webkit-text-size-adjust: 100%;
+  /* ダブルタップズームを無効化 */
+  touch-action: manipulation;
+}
+
+/* =============================================
+   画面（設定 / プレゼン）
+   ============================================= */
+
+.screen {
+  display: none;
+  width: 100%;
+  height: 100dvh;
+  position: fixed;
+  inset: 0;
+}
+
+.screen.active {
+  display: flex;
+  flex-direction: column;
+}
+
+/* =============================================
+   設定画面
+   ============================================= */
+
+.setup-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 480px;
+  width: 100%;
+  margin: auto;
+  padding: 32px 24px;
+  padding-top: calc(32px + var(--sat));
+  padding-bottom: calc(32px + var(--sab));
+  padding-left: calc(24px + var(--sal));
+  padding-right: calc(24px + var(--sar));
+  overflow-y: auto;
+}
+
+.app-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.app-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-top: -12px;
+}
+
+/* フォームグループ */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-input {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  color: var(--color-text);
+  font-size: 1.125rem;
+  padding: 14px 16px;
+  width: 100%;
+  min-height: 52px; /* Apple HIG: 最小タップターゲット 44px */
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.form-input[readonly] {
+  opacity: 0.6;
+}
+
+/* ファイル入力 */
+.file-input-wrapper {
+  position: relative;
+}
+
+.file-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.file-input-label {
+  display: flex;
+  align-items: center;
+  background: var(--color-surface);
+  border: 2px dashed var(--color-border);
+  border-radius: 12px;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  padding: 16px;
+  min-height: 56px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.file-input:focus + .file-input-label,
+.file-input-label:hover {
+  border-color: var(--color-accent);
+}
+
+/* 1ページあたりの秒数 */
+.per-page-info {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.per-page-info strong {
+  color: var(--color-accent);
+  font-size: 1.2em;
+}
+
+/* 開始ボタン */
+.btn-primary {
+  background: var(--color-accent);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1.125rem;
+  font-weight: 700;
+  min-height: 56px; /* Apple HIG */
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+  opacity: 0.85;
+}
+
+.btn-primary:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* =============================================
+   プレゼン画面
+   ============================================= */
+
+#present-screen {
+  background: #000;
+  flex-direction: column;
+}
+
+/* PDF Canvas ラッパー */
+.canvas-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#pdf-canvas {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ローディングオーバーレイ */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =============================================
+   コントロールバー
+   ============================================= */
+
+.control-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-surface);
+  padding: 8px 12px;
+  padding-bottom: calc(8px + var(--sab));
+  padding-left: calc(12px + var(--sal));
+  padding-right: calc(12px + var(--sar));
+  min-height: 64px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ボタングループ（前/停止/次） */
+.control-group {
+  display: flex;
+  gap: 4px;
+}
+
+/* コントロールボタン */
+.ctrl-btn {
+  background: var(--color-primary);
+  border: none;
+  border-radius: 10px;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  min-width: 44px; /* Apple HIG */
+  min-height: 44px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.ctrl-btn:active {
+  opacity: 0.7;
+  transform: scale(0.93);
+}
+
+.ctrl-btn--pause {
+  background: var(--color-accent);
+  min-width: 48px;
+}
+
+.ctrl-btn--paused {
+  background: #2a7a2a;
+}
+
+.ctrl-btn--back {
+  background: transparent;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  margin-left: auto;
+}
+
+/* 残り時間表示 */
+.time-display {
+  flex: 1;
+  text-align: center;
+  line-height: 1;
+}
+
+.time-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+.time-unit {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* ページ表示 */
+.page-display {
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.page-sep {
+  margin: 0 2px;
+}
+
+/* =============================================
+   プログレスバー
+   ============================================= */
+
+.progress-bar-wrapper {
+  height: 4px;
+  background: var(--color-border);
+  padding-left: var(--sal);
+  padding-right: var(--sar);
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--color-progress);
+  width: 0%;
+  transition: width 0.3s linear;
+}
+
+/* =============================================
+   終了オーバーレイ
+   ============================================= */
+
+.finish-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.finish-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px;
+}
+
+.finish-icon {
+  font-size: 4rem;
+}
+
+.finish-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* =============================================
+   landscape（横向き）最適化
+   ============================================= */
+
+@media (orientation: landscape) {
+  .control-bar {
+    min-height: 56px;
+    padding-top: 6px;
+    padding-bottom: calc(6px + var(--sab));
+  }
+
+  .time-value {
+    font-size: 1.25rem;
+  }
+}
+
+/* =============================================
+   ダークモード（デフォルトがダーク）
+   ============================================= */
+
+@media (prefers-color-scheme: light) {
+  /* ライトモードでもダークUIを維持（プレゼン用途のため） */
+  html {
+    color-scheme: dark;
+  }
+}
