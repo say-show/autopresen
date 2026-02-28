@@ -1,0 +1,17 @@
+# 依存パッケージ
+node_modules/
+
+# ビルド成果物
+dist/
+
+# macOS
+.DS_Store
+
+# エディタ
+.vscode/
+*.swp
+*.swo
+
+# 環境変数
+.env
+.env.local

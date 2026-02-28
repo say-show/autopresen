@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>autopresen</title>
+
+    <!-- PWA: ホーム画面追加でフルスクリーン表示 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="autopresen" />
+
+    <!-- テーマカラー -->
+    <meta name="theme-color" content="#1a1a2e" />
+    <script type="module" crossorigin src="/autopresen/assets/index-6Ew2ukuw.js"></script>
+    <link rel="stylesheet" crossorigin href="/autopresen/assets/index-DRPkrwHv.css">
+  </head>
+  <body>
+    <!-- 設定画面 -->
+    <div id="setup-screen" class="screen active">
+      <div class="setup-container">
+        <h1 class="app-title">autopresen</h1>
+        <p class="app-subtitle">PDF自動ページめくりタイマー</p>
+
+        <div class="form-group">
+          <label for="pdf-input" class="form-label">PDFを選択</label>
+          <div class="file-input-wrapper">
+            <input
+              type="file"
+              id="pdf-input"
+              accept="application/pdf"
+              class="file-input"
+            />
+            <label for="pdf-input" class="file-input-label">
+              <span id="file-name-display">ファイルを選択...</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="total-pages" class="form-label">総ページ数</label>
+          <input
+            type="number"
+            id="total-pages"
+            class="form-input"
+            min="1"
+            placeholder="PDFを選択すると自動入力"
+            readonly
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="total-seconds" class="form-label">総時間（秒）</label>
+          <input
+            type="number"
+            id="total-seconds"
+            class="form-input"
+            min="1"
+            value="300"
+            placeholder="例: 300（5分）"
+          />
+        </div>
+
+        <div class="per-page-info" id="per-page-info" hidden>
+          <span>1ページあたり: </span>
+          <strong id="per-page-seconds">--</strong>
+          <span> 秒</span>
+        </div>
+
+        <button id="start-btn" class="btn-primary" disabled>
+          ▶ 開始
+        </button>
+      </div>
+    </div>
+
+    <!-- プレゼン画面 -->
+    <div id="present-screen" class="screen">
+      <!-- PDF描画用Canvas -->
+      <div class="canvas-wrapper">
+        <canvas id="pdf-canvas"></canvas>
+        <!-- ローディング表示 -->
+        <div id="loading-overlay" class="loading-overlay" hidden>
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+
+      <!-- コントロールバー -->
+      <div class="control-bar">
+        <!-- 左: 戻る・一時停止・進む -->
+        <div class="control-group">
+          <button id="prev-btn" class="ctrl-btn" title="前のページ">&#9664;</button>
+          <button id="pause-btn" class="ctrl-btn ctrl-btn--pause" title="一時停止/再開">&#9646;&#9646;</button>
+          <button id="next-btn" class="ctrl-btn" title="次のページ">&#9654;</button>
+        </div>
+
+        <!-- 中央: 残り時間カウントダウン -->
+        <div class="time-display">
+          <span id="remaining-time" class="time-value">--.-</span>
+          <span class="time-unit">s</span>
+        </div>
+
+        <!-- 右: ページ番号 -->
+        <div class="page-display">
+          <span id="current-page-num">1</span>
+          <span class="page-sep">/</span>
+          <span id="total-page-num">--</span>
+        </div>
+
+        <!-- 設定に戻るボタン -->
+        <button id="back-btn" class="ctrl-btn ctrl-btn--back" title="設定に戻る">✕</button>
+      </div>
+
+      <!-- プログレスバー -->
+      <div class="progress-bar-wrapper">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+    </div>
+
+    <!-- 終了オーバーレイ -->
+    <div id="finish-overlay" class="finish-overlay" hidden>
+      <div class="finish-content">
+        <div class="finish-icon">🎉</div>
+        <p class="finish-text">プレゼン終了！</p>
+        <button id="finish-back-btn" class="btn-primary">設定に戻る</button>
+      </div>
+    </div>
+
+  </body>
+</html>
